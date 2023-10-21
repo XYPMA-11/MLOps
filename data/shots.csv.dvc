@@ -1,0 +1,5 @@
+outs:
+- md5: 6b0a8792c74f47bb864bdbfc598f1e74
+  size: 37783167
+  hash: md5
+  path: shots.csv

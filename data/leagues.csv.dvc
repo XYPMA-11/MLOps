@@ -1,0 +1,5 @@
+outs:
+- md5: f2214b2237b9098871695b88d9769f50
+  size: 173
+  hash: md5
+  path: leagues.csv

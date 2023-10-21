@@ -1,0 +1,5 @@
+outs:
+- md5: f8bd15bda0aeba9e5052cf5fce1e64c8
+  size: 2076536
+  hash: md5
+  path: teamstats.csv

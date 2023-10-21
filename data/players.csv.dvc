@@ -1,0 +1,5 @@
+outs:
+- md5: 5864c75d5c30efcdb20f12d41dd38fa8
+  size: 187033
+  hash: md5
+  path: players.csv

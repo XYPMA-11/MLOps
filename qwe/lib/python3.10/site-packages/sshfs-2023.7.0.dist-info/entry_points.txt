@@ -1,0 +1,2 @@
+[fsspec.specs]
+ssh = sshfs.spec:SSHFileSystem
