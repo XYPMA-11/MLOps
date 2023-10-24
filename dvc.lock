@@ -1,0 +1,122 @@
+schema: '2.0'
+stages:
+  merge:
+    cmd: python3 scripts/merge_df.py
+    deps:
+    - path: data/raw/games.csv
+      hash: md5
+      md5: cf69813b4a4cc6670baa7df637f7d7e7
+      size: 2152129
+    - path: data/raw/teams.csv
+      hash: md5
+      md5: f4fcf915d57a7deaf7d5329cc7a75134
+      size: 2811
+    - path: data/raw/teamstats.csv
+      hash: md5
+      md5: f8bd15bda0aeba9e5052cf5fce1e64c8
+      size: 2076536
+    - path: scripts/merge_df.py
+      hash: md5
+      md5: 7c09471ad36bf41b6d3d2d8688d0b70c
+      size: 1267
+    outs:
+    - path: data/stage1
+      hash: md5
+      md5: 597bf29eba4661bdb8838917bf36f989.dir
+      size: 2950914
+      nfiles: 1
+  clear:
+    cmd: python3 scripts/clear_features.py
+    deps:
+    - path: data/stage1/train.csv
+      hash: md5
+      md5: 9c3f9a12a26c1023b270818c3cd4c5ad
+      size: 2950914
+    - path: scripts/clear_features.py
+      hash: md5
+      md5: a2fe67407034dcb31e895fb625053dd4
+      size: 505
+    outs:
+    - path: data/stage2
+      hash: md5
+      md5: 896d02c8658301831828ea066c463e93.dir
+      size: 1907955
+      nfiles: 1
+  modify:
+    cmd: python3 scripts/modify_df.py
+    deps:
+    - path: data/stage2/train.csv
+      hash: md5
+      md5: c675d9857d3aa47e26ff2f2cae35becb
+      size: 1907955
+    - path: scripts/modify_df.py
+      hash: md5
+      md5: 930e8b3fb6498a4af3d4fad5e920cd93
+      size: 488
+    outs:
+    - path: data/stage3
+      hash: md5
+      md5: f32eccbebe04ede8e9f1e6098ced7781.dir
+      size: 1972938
+      nfiles: 1
+  slit:
+    cmd: python3 scripts/train_test_split.py
+    deps:
+    - path: data/stage3/train.csv
+      hash: md5
+      md5: d7fc5e3edec79f50b9d135d2bd1b9b0f
+      size: 1972938
+    - path: scripts/train_test_split.py
+      hash: md5
+      md5: c77ea62059bb88fc4eb7a9eb48d52f6e
+      size: 742
+    params:
+      params.yaml:
+        split.split_ratio: 0.33
+    outs:
+    - path: data/stage4
+      hash: md5
+      md5: 3585074a4d1479c1309764f36bfc9aa7.dir
+      size: 1973171
+      nfiles: 2
+  train:
+    cmd: python3 scripts/model_learn.py
+    deps:
+    - path: data/stage4/train.csv
+      hash: md5
+      md5: 6cfca45da522c361aaebc65fd521d619
+      size: 1322015
+    - path: scripts/model_learn.py
+      hash: md5
+      md5: 3d37040f47f3f9b94b8fc704fcb3e76c
+      size: 1430
+    params:
+      params.yaml:
+        train.cv: 5
+        train.n_jobs: 10
+        train.verbose: 7
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: 9cdbd7be95ea5dfc3b8425b9a0a7c00f
+      size: 10181
+  evaluate:
+    cmd: python3 scripts/eval.py
+    deps:
+    - path: data/stage4/test.csv
+      hash: md5
+      md5: aa377cb47b2f35180cabad674e910456
+      size: 651156
+    - path: models/model.pkl
+      hash: md5
+      md5: 9cdbd7be95ea5dfc3b8425b9a0a7c00f
+      size: 10181
+    - path: scripts/eval.py
+      hash: md5
+      md5: 051cdf5c4e25e63795702cdbd39d9820
+      size: 1476
+    outs:
+    - path: metrics/evaluation.json
+      hash: md5
+      md5: f7788bd34daa99c554b16593733fb238
+      size: 29

@@ -1,0 +1,53 @@
+stages:
+  merge:
+    cmd: python3 scripts/merge_df.py
+    deps:
+    - data/raw/games.csv
+    - data/raw/teams.csv
+    - data/raw/teamstats.csv
+    - scripts/merge_df.py
+    outs:
+    - data/stage1
+  clear:
+    cmd: python3 scripts/clear_features.py
+    deps:
+    - data/stage1/train.csv
+    - scripts/clear_features.py
+    outs:
+    - data/stage2
+  modify:
+    cmd: python3 scripts/modify_df.py
+    deps:
+    - data/stage2/train.csv
+    - scripts/modify_df.py
+    outs:
+    - data/stage3
+  slit:
+    cmd: python3 scripts/train_test_split.py
+    deps:
+    - data/stage3/train.csv
+    - scripts/train_test_split.py
+    params:
+    - split.split_ratio
+    outs:
+    - data/stage4
+  train:
+    cmd: python3 scripts/model_learn.py
+    deps:
+    - data/stage4/train.csv
+    - scripts/model_learn.py
+    params:
+    - train.n_jobs
+    - train.cv
+    - train.verbose
+    outs:
+    - models/model.pkl
+  evaluate:
+    cmd: python3 scripts/eval.py
+    deps:
+    - data/stage4/test.csv
+    - scripts/eval.py
+    - models/model.pkl
+    metrics:
+    - metrics/evaluation.json:
+        cache: false
