@@ -1,0 +1,7 @@
+split:
+  split_ratio: 0.33
+  
+train:
+  cv: 25
+  n_jobs: 10
+  verbose: 2 
